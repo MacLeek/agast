@@ -359,4 +359,3 @@ int AgastDetector5_8::cornerScore(const unsigned char* p) {
     b_test = (bmin + bmax) / 2;
   }
 }
-

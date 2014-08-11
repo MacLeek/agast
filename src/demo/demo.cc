@@ -74,7 +74,8 @@ static void drawResult(const cv::Mat &imageGray, cv::Mat &imageOut,
     //		cvLine( imageOut, cvPoint( corners_nms[i].x-1, corners_nms[i].y
     //),
     // cvPoint( corners_nms[i].x+1, corners_nms[i].y ), CV_RGB(0,255,0) );
-    //		cvLine( imageOut,	cvPoint( corners_nms[i].x, corners_nms[i].y-1
+    //		cvLine( imageOut,	cvPoint( corners_nms[i].x,
+    //corners_nms[i].y-1
     //),
     // cvPoint( corners_nms[i].x, corners_nms[i].y+1 ), CV_RGB(0,255,0) );
   }

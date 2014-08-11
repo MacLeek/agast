@@ -146,4 +146,3 @@ vector<CvPoint>& AstDetector::nonMaximumSuppression() {
 
   return corners_nms;
 }
-

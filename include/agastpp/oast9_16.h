@@ -30,8 +30,8 @@
 //    TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 //    OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef OAST9_16_H
-#define OAST9_16_H
+#ifndef AGASTPP_OAST9_16_H_
+#define AGASTPP_OAST9_16_H_
 
 #include <cstdint>
 #include "agastpp/AstDetector.h"
@@ -90,4 +90,4 @@ class OastDetector9_16 : public AstDetector {
   }
 };
 
-#endif /* OAST9_16_H */
+#endif /* AGASTPP_OAST9_16_H_ */

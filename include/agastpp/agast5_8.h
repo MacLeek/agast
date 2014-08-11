@@ -30,8 +30,8 @@
 //    TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 //    OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef AGAST5_8_H
-#define AGAST5_8_H
+#ifndef AGASTPP_AGAST5_8_H_
+#define AGASTPP_AGAST5_8_H_
 
 #include <cstdint>
 #include "agastpp/AstDetector.h"
@@ -74,4 +74,4 @@ class AgastDetector5_8 : public AstDetector {
   }
 };
 
-#endif /* AGAST5_8_H */
+#endif /* AGASTPP_AGAST5_8_H_ */
