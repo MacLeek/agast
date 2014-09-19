@@ -24,9 +24,9 @@ target_link_libraries(${PROJECT_NAME}
     ${OpenCV_LIBRARIES}
     )
 
-#add_executable(demo
-    #src/demo/demo.cc
-    #)
-#target_link_libraries(demo
-    #${PROJECT_NAME}
-    #)
+add_executable(demo
+    src/demo/demo.cc
+    )
+target_link_libraries(demo
+    ${PROJECT_NAME}
+    )

@@ -42,9 +42,16 @@ class AstDetector {
   void processImage(const unsigned char* im,
                     std::vector<CvPoint>& keypoints_nms) {
     std::vector<CvPoint> keypoints;
+    processImage(im, keypoints, keypoints_nms);
+    //    detect(im, keypoints);
+    //    nms(im, keypoints, keypoints_nms);
+  }
+  void processImage(const unsigned char* im, std::vector<CvPoint>& keypoints,
+                    std::vector<CvPoint>& keypoints_nms) {
     detect(im, keypoints);
     nms(im, keypoints, keypoints_nms);
   }
+
   void set_threshold(int b_) { b = b_; }
   void set_imageSize(int xsize_, int ysize_) {
     xsize = xsize_;

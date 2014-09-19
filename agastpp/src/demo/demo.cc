@@ -75,7 +75,7 @@ static void drawResult(const cv::Mat &imageGray, cv::Mat &imageOut,
     //),
     // cvPoint( corners_nms[i].x+1, corners_nms[i].y ), CV_RGB(0,255,0) );
     //		cvLine( imageOut,	cvPoint( corners_nms[i].x,
-    //corners_nms[i].y-1
+    // corners_nms[i].y-1
     //),
     // cvPoint( corners_nms[i].x, corners_nms[i].y+1 ), CV_RGB(0,255,0) );
   }
@@ -116,10 +116,11 @@ int main(int argc, char *argv[]) {
     switch (j) {
       case OAST9_16: {
         cout << "OAST9_16:   ";
-        OastDetector9_16 ad9_16(cols, rows, AST_THR_16);
-        ad9_16.processImage((unsigned char *)imageGray.data);
-        vector<CvPoint> corners_all = ad9_16.get_corners_all();
-        vector<CvPoint> corners_nms = ad9_16.get_corners_nms();
+        agastpp::OastDetector9_16 ad9_16(cols, rows, AST_THR_16);
+        vector<CvPoint> corners_all;
+        vector<CvPoint> corners_nms;
+        ad9_16.processImage((unsigned char *)imageGray.data, corners_all,
+                            corners_nms);
 
         cout << corners_all.size() << " corner responses - "
              << corners_nms.size() << " corners after non-maximum suppression."
@@ -130,10 +131,11 @@ int main(int argc, char *argv[]) {
       }
       case AGAST7_12d: {
         cout << "AGAST7_12d: ";
-        AgastDetector7_12d ad7_12d(cols, rows, AST_THR_12);
-        ad7_12d.processImage((unsigned char *)imageGray.data);
-        vector<CvPoint> corners_all = ad7_12d.get_corners_all();
-        vector<CvPoint> corners_nms = ad7_12d.get_corners_nms();
+        agastpp::AgastDetector7_12d ad7_12d(cols, rows, AST_THR_12);
+        vector<CvPoint> corners_all;
+        vector<CvPoint> corners_nms;
+        ad7_12d.processImage((unsigned char *)imageGray.data, corners_all,
+                             corners_nms);
 
         cout << corners_all.size() << " corner responses - "
              << corners_nms.size() << " corners after non-maximum suppression."
@@ -144,10 +146,11 @@ int main(int argc, char *argv[]) {
       }
       case AGAST7_12s: {
         cout << "AGAST7_12s: ";
-        AgastDetector7_12s ad7_12s(cols, rows, AST_THR_12);
-        ad7_12s.processImage((unsigned char *)imageGray.data);
-        vector<CvPoint> corners_all = ad7_12s.get_corners_all();
-        vector<CvPoint> corners_nms = ad7_12s.get_corners_nms();
+        agastpp::AgastDetector7_12s ad7_12s(cols, rows, AST_THR_12);
+        vector<CvPoint> corners_all;
+        vector<CvPoint> corners_nms;
+        ad7_12s.processImage((unsigned char *)imageGray.data, corners_all,
+                             corners_nms);
 
         cout << corners_all.size() << " corner responses - "
              << corners_nms.size() << " corners after non-maximum suppression."
@@ -158,10 +161,11 @@ int main(int argc, char *argv[]) {
       }
       case AGAST5_8: {
         cout << "AGAST5_8:   ";
-        AgastDetector5_8 ad5_8(cols, rows, AST_THR_8);
-        ad5_8.processImage((unsigned char *)imageGray.data);
-        vector<CvPoint> corners_all = ad5_8.get_corners_all();
-        vector<CvPoint> corners_nms = ad5_8.get_corners_nms();
+        agastpp::AgastDetector5_8 ad5_8(cols, rows, AST_THR_8);
+        vector<CvPoint> corners_all;
+        vector<CvPoint> corners_nms;
+        ad5_8.processImage((unsigned char *)imageGray.data, corners_all,
+                           corners_nms);
 
         cout << corners_all.size() << " corner responses - "
              << corners_nms.size() << " corners after non-maximum suppression."
@@ -170,25 +174,27 @@ int main(int argc, char *argv[]) {
         cv::imwrite("agast5_8.ppm", imageOut);
 
         // parallel image processing by two detectors (possible threads)
-        AgastDetector5_8 ad5_8_thread1;  // necessary to access
-                                         // get_borderWidth() in VisualStudio
-        ad5_8_thread1 =
-            AgastDetector5_8(cols, ceil(static_cast<float>(rows) * 0.5) +
-                                       ad5_8_thread1.get_borderWidth(),
-                             AST_THR_8);
-        AgastDetector5_8 ad5_8_thread2(cols,
-                                       floor(static_cast<float>(rows) * 0.5) +
-                                           ad5_8_thread1.get_borderWidth(),
-                                       AST_THR_8);
-        ad5_8_thread1.processImage((unsigned char *)imageGray.data);
-        ad5_8_thread2.processImage(
-            ((unsigned char *)imageGray.data) +
-            ((int)ceil((float)rows * 0.5) - ad5_8_thread2.get_borderWidth()) *
-                cols);
-        vector<CvPoint> corners_all_thread1 = ad5_8_thread1.get_corners_all();
-        vector<CvPoint> corners_all_thread2 = ad5_8_thread2.get_corners_all();
-        vector<CvPoint> corners_nms_thread1 = ad5_8_thread1.get_corners_nms();
-        vector<CvPoint> corners_nms_thread2 = ad5_8_thread2.get_corners_nms();
+        agastpp::AgastDetector5_8 ad5_8_thread1;  // necessary to access
+        // get_borderWidth() in VisualStudio
+        ad5_8_thread1 = agastpp::AgastDetector5_8(
+            cols, ceil(static_cast<float>(rows) * 0.5) +
+                      ad5_8_thread1.get_borderWidth(),
+            AST_THR_8);
+        agastpp::AgastDetector5_8 ad5_8_thread2(
+            cols, floor(static_cast<float>(rows) * 0.5) +
+                      ad5_8_thread1.get_borderWidth(),
+            AST_THR_8);
+        vector<CvPoint> corners_all_thread1;
+        vector<CvPoint> corners_all_thread2;
+        vector<CvPoint> corners_nms_thread1;
+        vector<CvPoint> corners_nms_thread2;
+        ad5_8_thread1.processImage((unsigned char *)imageGray.data,
+                                   corners_all_thread1, corners_nms_thread1);
+        ad5_8_thread2.processImage(((unsigned char *)imageGray.data) +
+                                       ((int)ceil((float)rows * 0.5) -
+                                        ad5_8_thread2.get_borderWidth()) *
+                                           cols,
+                                   corners_all_thread2, corners_nms_thread2);
 
         // adjust thread2 responses from ROI to whole image scope
         int offset =
