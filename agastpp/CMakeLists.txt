@@ -15,7 +15,7 @@ include_directories(
     ${OpenCV_INCLUDE_DIRS}
     )
 
-## Declare a cpp library
+
 file(GLOB CC_FILES src/${PROJECT_NAME}/*.cc)
 add_library(${PROJECT_NAME}
     ${CC_FILES}
