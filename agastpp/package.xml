@@ -4,12 +4,10 @@
   <version>0.0.0</version>
   <description>The agastpp package</description>
 
-  <maintainer email="quchao@seas.upenn.edu">chao</maintainer>
+  <maintainer email="quchao@seas.upenn.edu">Chao Qu</maintainer>
 
   <license>GPL</license>
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <export>
-  </export>
 </package>
