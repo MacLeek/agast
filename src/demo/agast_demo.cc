@@ -61,29 +61,19 @@ static void drawResult(const cv::Mat &imageGray, cv::Mat &imageOut,
                        const vector<CvPoint> corners_nms) {
   cv::cvtColor(imageGray, imageOut, CV_GRAY2RGB);
   for (unsigned int i = 0; i < corners_all.size(); i++) {
-    cv::line(imageOut, cv::Point2f(corners_all[i].x, corners_all[i].y),
-             cv::Point2f(corners_all[i].x, corners_all[i].y),
-             cv::Scalar(255, 0, 0));
+    cv::circle(imageOut, cv::Point2f(corners_all[i].x, corners_all[i].y), 1,
+               cv::Scalar(255, 0, 0), -1, CV_AA);
   }
+
   for (unsigned int i = 0; i < corners_nms.size(); i++) {
-    // points
-    cv::line(imageOut, cv::Point2f(corners_nms[i].x, corners_nms[i].y),
-             cv::Point2f(corners_nms[i].x, corners_nms[i].y),
-             cv::Scalar(0, 255, 0));
-    // crosses
-    //		cvLine( imageOut, cvPoint( corners_nms[i].x-1, corners_nms[i].y
-    //),
-    // cvPoint( corners_nms[i].x+1, corners_nms[i].y ), CV_RGB(0,255,0) );
-    //		cvLine( imageOut,	cvPoint( corners_nms[i].x,
-    // corners_nms[i].y-1
-    //),
-    // cvPoint( corners_nms[i].x, corners_nms[i].y+1 ), CV_RGB(0,255,0) );
+    cv::circle(imageOut, cv::Point2f(corners_nms[i].x, corners_nms[i].y), 1,
+               cv::Scalar(0, 255, 0), -1, CV_AA);
   }
 }
 
-int main(int argc, char *argv[]) {
-  char *name_imageIn;
-  cv::Mat imageIn, imageGray, imageOut;
+int main(int argc, char **argv) {
+  string name_image_in;
+  cv::Mat image_gray, image_rgb;
   int rows, cols;
 
   // check program parameters
@@ -93,40 +83,38 @@ int main(int argc, char *argv[]) {
         "<image_in.xxx>\ne.g. demo demo.ppm\n");
     exit(0);
   }
-  name_imageIn = argv[1];
+  name_image_in = argv[1];
 
   cout << "Starting demo...\n";
 
   // load image and convert it to 8 bit grayscale
-  imageIn = cv::imread(name_imageIn, -1);
-  if (imageIn.rows == 0) {
-    cout << "Image \"" << name_imageIn << "\" could not be loaded.\n";
+  image_gray = cv::imread(name_image_in, CV_LOAD_IMAGE_GRAYSCALE);
+  if (image_gray.empty()) {
+    cout << "Image \"" << name_image_in << "\" could not be loaded.\n";
     exit(0);
   }
-  imageGray = cv::Mat(imageIn.size(), IPL_DEPTH_8U, 1);
-  cv::cvtColor(imageIn, imageGray, CV_RGB2GRAY);
 
-  cols = imageGray.cols;
-  rows = imageGray.rows;
+  cols = image_gray.cols;
+  rows = image_gray.rows;
 
-  imageOut = cv::Mat(imageIn.size(), IPL_DEPTH_8U, 3);
+  cv::cvtColor(image_gray, image_rgb, CV_GRAY2BGR);
 
   for (int j = 0; j < AST_PATTERN_LENGTH; j++) {
-    cv::cvtColor(imageGray, imageOut, CV_GRAY2RGB);
+    cv::cvtColor(image_gray, image_rgb, CV_GRAY2RGB);
     switch (j) {
       case OAST9_16: {
         cout << "OAST9_16:   ";
         agastpp::OastDetector9_16 ad9_16(cols, rows, AST_THR_16);
         vector<CvPoint> corners_all;
         vector<CvPoint> corners_nms;
-        ad9_16.processImage((unsigned char *)imageGray.data, corners_all,
+        ad9_16.processImage((unsigned char *)image_gray.data, corners_all,
                             corners_nms);
 
         cout << corners_all.size() << " corner responses - "
              << corners_nms.size() << " corners after non-maximum suppression."
              << endl;
-        drawResult(imageGray, imageOut, corners_all, corners_nms);
-        cv::imwrite("oast9_16.ppm", imageOut);
+        drawResult(image_gray, image_rgb, corners_all, corners_nms);
+        cv::imwrite("oast9_16.ppm", image_rgb);
         break;
       }
       case AGAST7_12d: {
@@ -134,14 +122,14 @@ int main(int argc, char *argv[]) {
         agastpp::AgastDetector7_12d ad7_12d(cols, rows, AST_THR_12);
         vector<CvPoint> corners_all;
         vector<CvPoint> corners_nms;
-        ad7_12d.processImage((unsigned char *)imageGray.data, corners_all,
+        ad7_12d.processImage((unsigned char *)image_gray.data, corners_all,
                              corners_nms);
 
         cout << corners_all.size() << " corner responses - "
              << corners_nms.size() << " corners after non-maximum suppression."
              << endl;
-        drawResult(imageGray, imageOut, corners_all, corners_nms);
-        cv::imwrite("agast7_12d.ppm", imageOut);
+        drawResult(image_gray, image_rgb, corners_all, corners_nms);
+        cv::imwrite("agast7_12d.ppm", image_rgb);
         break;
       }
       case AGAST7_12s: {
@@ -149,14 +137,14 @@ int main(int argc, char *argv[]) {
         agastpp::AgastDetector7_12s ad7_12s(cols, rows, AST_THR_12);
         vector<CvPoint> corners_all;
         vector<CvPoint> corners_nms;
-        ad7_12s.processImage((unsigned char *)imageGray.data, corners_all,
+        ad7_12s.processImage((unsigned char *)image_gray.data, corners_all,
                              corners_nms);
 
         cout << corners_all.size() << " corner responses - "
              << corners_nms.size() << " corners after non-maximum suppression."
              << endl;
-        drawResult(imageGray, imageOut, corners_all, corners_nms);
-        cv::imwrite("agast7_12s.ppm", imageOut);
+        drawResult(image_gray, image_rgb, corners_all, corners_nms);
+        cv::imwrite("agast7_12s.ppm", image_rgb);
         break;
       }
       case AGAST5_8: {
@@ -164,14 +152,14 @@ int main(int argc, char *argv[]) {
         agastpp::AgastDetector5_8 ad5_8(cols, rows, AST_THR_8);
         vector<CvPoint> corners_all;
         vector<CvPoint> corners_nms;
-        ad5_8.processImage((unsigned char *)imageGray.data, corners_all,
+        ad5_8.processImage((unsigned char *)image_gray.data, corners_all,
                            corners_nms);
 
         cout << corners_all.size() << " corner responses - "
              << corners_nms.size() << " corners after non-maximum suppression."
              << endl;
-        drawResult(imageGray, imageOut, corners_all, corners_nms);
-        cv::imwrite("agast5_8.ppm", imageOut);
+        drawResult(image_gray, image_rgb, corners_all, corners_nms);
+        cv::imwrite("agast5_8.ppm", image_rgb);
 
         // parallel image processing by two detectors (possible threads)
         agastpp::AgastDetector5_8 ad5_8_thread1;  // necessary to access
@@ -188,13 +176,13 @@ int main(int argc, char *argv[]) {
         vector<CvPoint> corners_all_thread2;
         vector<CvPoint> corners_nms_thread1;
         vector<CvPoint> corners_nms_thread2;
-        ad5_8_thread1.processImage((unsigned char *)imageGray.data,
-                                   corners_all_thread1, corners_nms_thread1);
-        ad5_8_thread2.processImage(((unsigned char *)imageGray.data) +
-                                       ((int)ceil((float)rows * 0.5) -
-                                        ad5_8_thread2.get_borderWidth()) *
-                                           cols,
-                                   corners_all_thread2, corners_nms_thread2);
+        ad5_8_thread1.processImage(image_gray.data, corners_all_thread1,
+                                   corners_nms_thread1);
+        ad5_8_thread2.processImage(
+            (image_gray.data) + ((int)ceil((float)rows * 0.5) -
+                                 ad5_8_thread2.get_borderWidth()) *
+                                    cols,
+            corners_all_thread2, corners_nms_thread2);
 
         // adjust thread2 responses from ROI to whole image scope
         int offset =
@@ -217,12 +205,12 @@ int main(int argc, char *argv[]) {
              << " corner responses - "
              << corners_nms_thread1.size() + corners_nms_thread2.size()
              << " corners after non-maximum suppression." << endl;
-        drawResult(imageGray, imageOut, corners_all_thread1,
+        drawResult(image_gray, image_rgb, corners_all_thread1,
                    corners_nms_thread1);
-        cv::imwrite("agast5_8_thread1.ppm", imageOut);
-        drawResult(imageGray, imageOut, corners_all_thread2,
+        cv::imwrite("agast5_8_thread1.ppm", image_rgb);
+        drawResult(image_gray, image_rgb, corners_all_thread2,
                    corners_nms_thread2);
-        cv::imwrite("agast5_8_thread2.ppm", imageOut);
+        cv::imwrite("agast5_8_thread2.ppm", image_rgb);
         break;
       }
       default:

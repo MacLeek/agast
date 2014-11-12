@@ -32,19 +32,18 @@ class AstDetector {
   AstDetector() : xsize(0), ysize(0), b(-1) {}
   AstDetector(int width, int height, int thr)
       : xsize(width), ysize(height), b(thr) {}
-  virtual ~AstDetector() = default;
 
+  virtual ~AstDetector() = default;
   virtual void detect(const unsigned char* im,
                       std::vector<CvPoint>& corners_all) = 0;
   virtual int get_borderWidth() = 0;
+
   void nms(const unsigned char* im, const std::vector<CvPoint>& corners_all,
            std::vector<CvPoint>& corners_nms);
   void processImage(const unsigned char* im,
                     std::vector<CvPoint>& keypoints_nms) {
     std::vector<CvPoint> keypoints;
     processImage(im, keypoints, keypoints_nms);
-    //    detect(im, keypoints);
-    //    nms(im, keypoints, keypoints_nms);
   }
   void processImage(const unsigned char* im, std::vector<CvPoint>& keypoints,
                     std::vector<CvPoint>& keypoints_nms) {
@@ -58,12 +57,13 @@ class AstDetector {
     ysize = ysize_;
     init_pattern();
   }
+
   virtual int cornerScore(const unsigned char* p,
                           bool ignorePattern = false) = 0;
 
  protected:
   virtual void init_pattern() = 0;
-  void score(const unsigned char* i, const std::vector<CvPoint>& corners_all);
+  void score(const unsigned char* im, const std::vector<CvPoint>& corners_all);
   void nonMaximumSuppression(const std::vector<CvPoint>& corners_all,
                              std::vector<CvPoint>& corners_nms);
   std::vector<int> scores;
